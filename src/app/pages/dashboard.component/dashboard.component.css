@@ -1,0 +1,34 @@
+.delete-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1055;
+}
+.delete-modal-backdrop {
+    position: absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    z-index: 1050;
+}
+@media(max-width: 1460px) {
+    table th:nth-child(4),
+    table th:nth-child(5),
+    table td:nth-child(4),
+    table td:nth-child(5) {
+        display: none;
+    }
+}
+@media(max-width: 560px) {
+    table th:nth-child(3),
+    table th:nth-child(4),
+    table th:nth-child(5),
+    table td:nth-child(3),
+    table td:nth-child(4),
+    table td:nth-child(5) {
+        display: none;
+    }
+}
