@@ -1,59 +1,66 @@
-# ApiProjectCompetition
+<h3 align="center">PROJECT COMPETITION</h3>
+<p align="center">
+<a href="#features">Features</a> &nbsp;&bull;&nbsp;
+<a href="#tech-stack">Tech Stack</a> &nbsp;&bull;&nbsp;
+<a href="#api">API</a> &nbsp;&bull;&nbsp;
+<a href="#installation">Installation</a> &nbsp;&bull;&nbsp;
+<a href="#usage">Usage</a> &nbsp;&bull;&nbsp;
+<a href="#license">License</a>
+</p>
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.1.0.
+## About
+A web application that allows users to register, log in, and manage competitions. The application distinguishes between regular users and administrators—with CRUD functionality for competitions, where administrators have additional privileges, such as updating and deleting competitions.
 
-## Development server
+Check out the live demo <a href="https://afga-project-competition.netlify.app/" target="_blank">here</a>.
 
-To start a local development server, run:
+## Features
+- User registration and login
+- Dashboard with statistics
+- CRUD operations for competitions:
+  - Create and read (all users)
+  - Update and delete (admin only)
+- Role-based access (user vs. admin)
 
+## Tech Stack
+- **Frontend:** Angular
+- **Styling:** HTML, CSS and Bootstrap
+
+## API
+The application uses a REST API for managing user accounts and competitions.
+- **Base URL:** https://api.freeprojectapi.com/api/ProjectCompetition/
+- **Endpoints:**
+  - `POST /register` – Create a new user
+  - `POST /login` – Log in a user
+  - `GET /getdashboardsummary` – Get statistics for the dashboard
+  - `GET /getallcompetition` – Get all competitions
+  - `POST /competition` – Create a new competition
+  - `PUT /update/:id` – Update a competition (admin only)
+  - `DELETE /delete/:id` – Delete a competition (admin only)
+> Make sure to have the API running before starting the application.
+
+## Installation
+1. Clone the repository:
 ```bash
-ng serve
+git clone https://github.com/<your-username>/angular_project-competition.git
 ```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
+2. Navigate into the project folder:
 ```bash
-ng generate component component-name
+cd angular_project-competition
 ```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
+3. Install dependencies:
 ```bash
-ng generate --help
+npm install
 ```
-
-## Building
-
-To build the project run:
-
+4. Start the development server:
 ```bash
-ng build
+npm start
 ```
+> The application should now be running at `http://localhost:4200/`. Make sure you have Node.js and Angular CLI installed.
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## Usage
+- Navigate to the login/sign-up page to create a new account or log in
+- Access the dashboard to view statistics
+- Create, (admin only) edit, or delete competitions
 
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## License
+This project is licensed under the MIT License. See the <a href="https://github.com/afga-dev/angular_project-competition/blob/master/LICENSE.md" target="_blank">LICENSE</a> file for details.
