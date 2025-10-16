@@ -6,7 +6,7 @@ import { UserService } from './services/user.service';
   selector: 'app-root',
   imports: [RouterModule, RouterOutlet],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.css',
 })
 export class App {
   userService = inject(UserService);

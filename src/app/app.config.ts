@@ -1,4 +1,9 @@
-import { ApplicationConfig, InjectionToken, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
+import {
+  ApplicationConfig,
+  InjectionToken,
+  provideBrowserGlobalErrorListeners,
+  provideZoneChangeDetection,
+} from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideHttpClient } from '@angular/common/http';
@@ -12,7 +17,8 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(),
     {
-      provide: API_URL, useValue: 'https://api.freeprojectapi.com/api/ProjectCompetition'
-    }
-  ]
+      provide: API_URL,
+      useValue: 'https://api.freeprojectapi.com/api/ProjectCompetition',
+    },
+  ],
 };
