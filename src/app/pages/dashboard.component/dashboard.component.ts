@@ -51,7 +51,7 @@ export class DashboardComponent {
       );
       this.competitions.set(competitions);
     } catch (err) {
-      //console.log(err);
+      // console.log(err);
     }
   }
 
@@ -165,7 +165,7 @@ export class DashboardComponent {
       );
       this.closeDeleteModal();
     } catch (err) {
-      //console.log(err);
+      // console.log(err);
     }
   }
 }

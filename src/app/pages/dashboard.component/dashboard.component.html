@@ -1,267 +1,266 @@
 <main class="container-fluid py-4">
-	<div class="row g-4">
-		<div class="col-12 col-lg-7">
-			<div class="card shadow-sm bg-white border border-secondary">
-				<div class="card-header bg-dark text-white">
-					<h5 class="mb-0">Competitions</h5>
-				</div>
-				<!-- Table -->
-				<div class="card-body">
-					@if (isLoading()) {
-					<div class="d-flex justify-content-center py-5">
-						<div class="spinner-border text-dark" role="status">
-							<span class="visually-hidden">Loading...</span>
-						</div>
-					</div>
-					}
-					@if (!isLoading()) {
-					<div class="table-responsive">
-						<table class="table table-striped align-middle mb-0">
-							<thead class="table-light">
-								<tr>
-									<th scope="col">No.</th>
-									<th scope="col">Title</th>
-									<th scope="col">Description</th>
-									<th scope="col">Start Date</th>
-									<th scope="col">End Date</th>
-									<th scope="col">Status</th>
-									@if (userService.signedupResponse()?.role === 'admin') {
-									<th scope="col" class="text-center">Actions</th>
-									}
-								</tr>
-							</thead>
-							<tbody>
-								<tr
-									*ngFor="let competition of competitions() | paginate: { itemsPerPage: 10, currentPage: currentPage() }; let i = index"
-									>
-									<td>{{ (currentPage() - 1) * 10 + i + 1 }}</td>
-									<td>{{ competition.title }}</td>
-									<td>{{ competition.description }}</td>
-									<td>{{ competition.startDate | date: 'MM/dd/yyyy' }}</td>
-									<td>{{ competition.endDate | date: 'MM/dd/yyyy' }}</td>
-									<td>{{ competition.status }}</td>
-									@if (userService.signedupResponse()?.role === 'admin') {
-									<td class="text-center">
-										<div class="d-flex gap-1">
-											<button
-												type="button"
-												class="btn btn-sm btn-success flex-fill"
-												(click)="editCompetition(competition)"
-												>
-											Edit
-											</button>
-											<button
-												type="button"
-												class="btn btn-sm btn-danger flex-fill"
-												(click)="openDeleteModal(competition)"
-												>
-											Delete
-											</button>
-										</div>
-									</td>
-									}
-								</tr>
-							</tbody>
-						</table>
-					</div>
-					<div class="d-flex justify-content-center mt-3">
-						<pagination-controls
-							(pageChange)="currentPage.set($event)"
-							></pagination-controls>
-					</div>
-					}
-				</div>
-			</div>
-		</div>
-		<!-- Modal -->
-		<div
-		id="delete-modal"
-		class="modal fade"
-		[class.show]="isDeleteModalVisible()"
-		[style.display]="isDeleteModalVisible() ? 'block' : 'none'"
-		tabindex="-1"
-		>
-		<div id="delete-modal-backdrop" class="modal-backdrop fade show"></div>
-		<div
-			id="delete-modal-dialog"
-			class="modal-dialog modal-dialog-centered"
-			style="position: relative; z-index: 1060;"
-			>
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title">Confirm deletion</h5>
-					<button
-						type="button"
-						class="btn-close"
-						(click)="closeDeleteModal()"
-						></button>
-				</div>
-				<div class="modal-body">
-					Are you sure you want to delete
-					<strong>{{ competition()?.title }}</strong>
-					competition?
-				</div>
-				<div class="modal-footer">
-					<button
-						type="button"
-						class="btn btn-secondary"
-						(click)="closeDeleteModal()"
-						>
-					Cancel
-					</button>
-					<button
-						type="button"
-						class="btn btn-danger"
-						(click)="confirmDelete()"
-						>
-					Delete
-					</button>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- Card -->
-	<div class="col-12 col-lg-5">
-		<div class="card shadow-sm bg-white border border-secondary">
-			<div class="card-header bg-dark text-white">
-				<h5 class="mb-0">Add Competition</h5>
-			</div>
-			<!-- Alerts -->
-			@if (dashboardMessage()) {
-			<div
-				class="alert alert-success alert-dismissible fade show mx-auto my-3 w-75 text-center"
-				role="alert"
-				>
-				{{ dashboardMessage() }}
-				<button
-					type="button"
-					class="btn-close"
-					(click)="dashboardMessage.set(null)"
-					aria-label="Close"
-					></button>
-			</div>
-			}
-			@if (dashboardError()) {
-			<div
-				class="alert alert-danger alert-dismissible fade show mx-auto my-3 w-75 text-center"
-				role="alert"
-				>
-				{{ dashboardError() }}
-				<button
-					type="button"
-					class="btn-close"
-					(click)="dashboardError.set(null)"
-					aria-label="Close"
-					></button>
-			</div>
-			}
-			<div class="card-body">
-				<form [formGroup]="dashboardForm" (ngSubmit)="submitDashboardForm()">
-				<div class="mb-3">
-					<label for="title" class="form-label">Title</label>
-					<input
-						type="text"
-						class="form-control"
-						id="title"
-						placeholder="Enter the competition title"
-						formControlName="title"
-						/>
-					@if (hasError('title', 'required')) {
-					<span class="text-danger" aria-live="polite">
-					Title is required.
-					</span>
-					}
-					@if (hasError('title', 'minlength')) {
-					<span class="text-danger" aria-live="polite">
-					Title must be at least 3 characters.
-					</span>
-					}
-				</div>
-				<div class="mb-3">
-					<label for="description" class="form-label">Description</label>
-					<textarea
-						class="form-control"
-						id="description"
-						rows="3"
-						placeholder="Enter the competition's description"
-						formControlName="description"
-						></textarea>
-					@if (hasError('description', 'required')) {
-					<span class="text-danger" aria-live="polite">
-					Description is required.
-					</span>
-					}
-					@if (hasError('description', 'minlength')) {
-					<span class="text-danger" aria-live="polite">
-					Description must be at least 3 characters.
-					</span>
-					}
-				</div>
-				<div class="mb-3">
-					<label for="startDate" class="form-label">Start date</label>
-					<input
-						type="date"
-						class="form-control"
-						id="startDate"
-						formControlName="startDate"
-						/>
-					@if (hasError('startDate', 'required')) {
-					<span class="text-danger" aria-live="polite">
-					Start date is required.
-					</span>
-					}
-					@if (hasError('startDate', 'invalidDate')) {
-					<span class="text-danger" aria-live="polite">
-					Start date must be valid.
-					</span>
-					}
-				</div>
-				<div class="mb-3">
-					<label for="endDate" class="form-label">End date</label>
-					<input
-						type="date"
-						class="form-control"
-						id="endDate"
-						formControlName="endDate"
-						/>
-					@if (hasError('endDate', 'required')) {
-					<span class="text-danger" aria-live="polite">
-					End date is required.
-					</span>
-					}
-					@if (hasError('endDate', 'invalidDate')) {
-					<span class="text-danger" aria-live="polite">
-					End date must be valid.
-					</span>
-					}
-				</div>
-				<div class="mb-3">
-					<label for="status" class="form-label">Status</label>
-					<select class="form-select" id="status" formControlName="status">
-						<option value="Ongoing">Ongoing</option>
-						<option value="Completed">Completed</option>
-						<option value="Upcoming">Upcoming</option>
-					</select>
-				</div>
-				<div class="d-grid gap-2">
-					<button
-						type="submit"
-						class="btn btn-success"
-						[disabled]="dashboardForm.invalid"
-						>
-					{{ competition() ? 'Save edit' : 'Save' }}
-					</button>
-					<button
-						type="reset"
-						class="btn btn-danger"
-						(click)="clearDashboardForm()"
-						>
-					Clear
-					</button>
-				</div>
-				</form>
-			</div>
-		</div>
-	</div>
-	</div>
+  <div class="row g-4">
+    <div class="col-12 col-lg-7">
+      <div class="card shadow-sm bg-white border border-secondary">
+        <div class="card-header bg-dark text-white">
+          <h5 class="mb-0">Competitions</h5>
+        </div>
+        <!-- Table -->
+        <div class="card-body">
+          @if (isLoading()) {
+          <div class="d-flex justify-content-center py-5">
+            <div class="spinner-border text-dark" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+          } @if (!isLoading()) {
+          <div class="table-responsive">
+            <table class="table table-striped align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th scope="col">No.</th>
+                  <th scope="col">Title</th>
+                  <th scope="col">Description</th>
+                  <th scope="col">Start Date</th>
+                  <th scope="col">End Date</th>
+                  <th scope="col">Status</th>
+                  @if (userService.signedupResponse()?.role === 'admin') {
+                  <th scope="col" class="text-center">Actions</th>
+                  }
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  *ngFor="
+                    let competition of competitions()
+                      | paginate
+                        : { itemsPerPage: 10, currentPage: currentPage() };
+                    let i = index
+                  "
+                >
+                  <td>{{ (currentPage() - 1) * 10 + i + 1 }}</td>
+                  <td>{{ competition.title }}</td>
+                  <td>{{ competition.description }}</td>
+                  <td>{{ competition.startDate | date : "MM/dd/yyyy" }}</td>
+                  <td>{{ competition.endDate | date : "MM/dd/yyyy" }}</td>
+                  <td>{{ competition.status }}</td>
+                  @if (userService.signedupResponse()?.role === 'admin') {
+                  <td class="text-center">
+                    <div class="d-flex gap-1">
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-success flex-fill"
+                        (click)="editCompetition(competition)"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-danger flex-fill"
+                        (click)="openDeleteModal(competition)"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </td>
+                  }
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="d-flex justify-content-center mt-3">
+            <pagination-controls
+              (pageChange)="currentPage.set($event)"
+            ></pagination-controls>
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+    <!-- Modal -->
+    <div
+      id="delete-modal"
+      class="modal fade"
+      [class.show]="isDeleteModalVisible()"
+      [style.display]="isDeleteModalVisible() ? 'block' : 'none'"
+      tabindex="-1"
+    >
+      <div id="delete-modal-backdrop" class="modal-backdrop fade show"></div>
+      <div
+        id="delete-modal-dialog"
+        class="modal-dialog modal-dialog-centered"
+        style="position: relative; z-index: 1060"
+      >
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Confirm deletion</h5>
+            <button
+              type="button"
+              class="btn-close"
+              (click)="closeDeleteModal()"
+            ></button>
+          </div>
+          <div class="modal-body">
+            Are you sure you want to delete
+            <strong>{{ competition()?.title }}</strong>
+            competition?
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              (click)="closeDeleteModal()"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="btn btn-danger"
+              (click)="confirmDelete()"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Card -->
+    <div class="col-12 col-lg-5">
+      <div class="card shadow-sm bg-white border border-secondary">
+        <div class="card-header bg-dark text-white">
+          <h5 class="mb-0">Add Competition</h5>
+        </div>
+        <!-- Alerts -->
+        @if (dashboardMessage()) {
+        <div
+          class="alert alert-success alert-dismissible fade show mx-auto my-3 w-75 text-center"
+          role="alert"
+        >
+          {{ dashboardMessage() }}
+          <button
+            type="button"
+            class="btn-close"
+            (click)="dashboardMessage.set(null)"
+            aria-label="Close"
+          ></button>
+        </div>
+        } @if (dashboardError()) {
+        <div
+          class="alert alert-danger alert-dismissible fade show mx-auto my-3 w-75 text-center"
+          role="alert"
+        >
+          {{ dashboardError() }}
+          <button
+            type="button"
+            class="btn-close"
+            (click)="dashboardError.set(null)"
+            aria-label="Close"
+          ></button>
+        </div>
+        }
+        <div class="card-body">
+          <form [formGroup]="dashboardForm" (ngSubmit)="submitDashboardForm()">
+            <div class="mb-3">
+              <label for="title" class="form-label">Title</label>
+              <input
+                type="text"
+                class="form-control"
+                id="title"
+                placeholder="Enter the competition title"
+                formControlName="title"
+              />
+              @if (hasError('title', 'required')) {
+              <span class="text-danger" aria-live="polite">
+                Title is required.
+              </span>
+              } @if (hasError('title', 'minlength')) {
+              <span class="text-danger" aria-live="polite">
+                Title must be at least 3 characters.
+              </span>
+              }
+            </div>
+            <div class="mb-3">
+              <label for="description" class="form-label">Description</label>
+              <textarea
+                class="form-control"
+                id="description"
+                rows="3"
+                placeholder="Enter the competition's description"
+                formControlName="description"
+              ></textarea>
+              @if (hasError('description', 'required')) {
+              <span class="text-danger" aria-live="polite">
+                Description is required.
+              </span>
+              } @if (hasError('description', 'minlength')) {
+              <span class="text-danger" aria-live="polite">
+                Description must be at least 3 characters.
+              </span>
+              }
+            </div>
+            <div class="mb-3">
+              <label for="startDate" class="form-label">Start date</label>
+              <input
+                type="date"
+                class="form-control"
+                id="startDate"
+                formControlName="startDate"
+              />
+              @if (hasError('startDate', 'required')) {
+              <span class="text-danger" aria-live="polite">
+                Start date is required.
+              </span>
+              } @if (hasError('startDate', 'invalidDate')) {
+              <span class="text-danger" aria-live="polite">
+                Start date must be valid.
+              </span>
+              }
+            </div>
+            <div class="mb-3">
+              <label for="endDate" class="form-label">End date</label>
+              <input
+                type="date"
+                class="form-control"
+                id="endDate"
+                formControlName="endDate"
+              />
+              @if (hasError('endDate', 'required')) {
+              <span class="text-danger" aria-live="polite">
+                End date is required.
+              </span>
+              } @if (hasError('endDate', 'invalidDate')) {
+              <span class="text-danger" aria-live="polite">
+                End date must be valid.
+              </span>
+              }
+            </div>
+            <div class="mb-3">
+              <label for="status" class="form-label">Status</label>
+              <select class="form-select" id="status" formControlName="status">
+                <option value="Ongoing">Ongoing</option>
+                <option value="Completed">Completed</option>
+                <option value="Upcoming">Upcoming</option>
+              </select>
+            </div>
+            <div class="d-grid gap-2">
+              <button
+                type="submit"
+                class="btn btn-success"
+                [disabled]="dashboardForm.invalid"
+              >
+                {{ competition() ? "Save edit" : "Save" }}
+              </button>
+              <button
+                type="reset"
+                class="btn btn-danger"
+                (click)="clearDashboardForm()"
+              >
+                Clear
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 </main>
