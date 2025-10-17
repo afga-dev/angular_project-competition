@@ -5,9 +5,9 @@ import { SigninComponent } from './pages/signin.component/signin.component';
 import { SignupComponent } from './pages/signup.component/signup.component';
 
 export const routes: Routes = [
-    { path: '', redirectTo: 'home', pathMatch: 'full' },
+    { path: '', component: HomeComponent },
     { path: 'dashboard', component: DashboardComponent },
-    { path: 'home', component: HomeComponent },
     { path: 'signin', component: SigninComponent },
     { path: 'signup', component: SignupComponent },
+    { path: '**', redirectTo: '', pathMatch: 'full' },
 ];
