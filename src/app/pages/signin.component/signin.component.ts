@@ -3,8 +3,9 @@ import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { UserService } from '../../services/user.service';
-import { UserSigninInterface } from '../../models/user-signin.interface';
+import { SignIn } from '../../models/signin.interface';
 import { firstValueFrom } from 'rxjs';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-signin',
@@ -14,6 +15,7 @@ import { firstValueFrom } from 'rxjs';
   styleUrl: './signin.component.css',
 })
 export class SigninComponent {
+  private authService = inject(AuthService);
   private userService = inject(UserService);
   private formBuilder = inject(FormBuilder);
 
@@ -39,14 +41,14 @@ export class SigninComponent {
   async submitSigninForm() {
     if (this.signinForm.invalid || this.isSubmitting()) return;
 
-    const signinData: UserSigninInterface = this.signinForm.getRawValue();
+    const signinData: SignIn = this.signinForm.getRawValue();
 
     this.isSubmitting.set(true);
     this.signinError.set(null);
 
     try {
-      const user = await firstValueFrom(this.userService.onSignin(signinData));
-      this.userService.setSignedupResponse(user);
+      const user = await firstValueFrom(this.authService.signIn(signinData));
+      this.userService.setUser(user);
     } catch (err) {
       this.signinError.set(`Email and/or password doesn't match.`);
     } finally {

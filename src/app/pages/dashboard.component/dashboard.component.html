@@ -24,7 +24,7 @@
                   <th scope="col">Start Date</th>
                   <th scope="col">End Date</th>
                   <th scope="col">Status</th>
-                  @if (userService.signedupResponse()?.role === 'admin') {
+                  @if (userService.user() == 'admin') {
                   <th scope="col" class="text-center">Actions</th>
                   }
                 </tr>
@@ -44,7 +44,7 @@
                   <td>{{ competition.startDate | date : "MM/dd/yyyy" }}</td>
                   <td>{{ competition.endDate | date : "MM/dd/yyyy" }}</td>
                   <td>{{ competition.status }}</td>
-                  @if (userService.signedupResponse()?.role === 'admin') {
+                  @if (userService.user() == 'admin') {
                   <td class="text-center">
                     <div class="d-flex gap-1">
                       <button
@@ -97,6 +97,7 @@
             <button
               type="button"
               class="btn-close"
+              title="Close"
               (click)="closeDeleteModal()"
             ></button>
           </div>
