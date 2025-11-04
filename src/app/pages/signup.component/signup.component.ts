@@ -3,8 +3,9 @@ import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UserService } from '../../services/user.service';
 import { RouterModule } from '@angular/router';
-import { UserSignupInterface } from '../../models/user-signup.interface';
+import { SignUp } from '../../models/signup.interface';
 import { firstValueFrom } from 'rxjs';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-signup',
@@ -14,6 +15,7 @@ import { firstValueFrom } from 'rxjs';
   styleUrls: ['./signup.component.css'],
 })
 export class SignupComponent {
+  private authService = inject(AuthService);
   private userService = inject(UserService);
   private formBuilder = inject(FormBuilder);
 
@@ -42,14 +44,14 @@ export class SignupComponent {
   async submitSignupForm() {
     if (this.signupForm.invalid || this.isSubmitting()) return;
 
-    const signupData: UserSignupInterface = this.signupForm.getRawValue();
+    const signupData: SignUp = this.signupForm.getRawValue();
 
     this.isSubmitting.set(true);
     this.signupMessage.set(null);
     this.signupError.set(null);
 
     try {
-      await firstValueFrom(this.userService.onSignup(signupData));
+      await firstValueFrom(this.authService.signUp(signupData));
       this.signupMessage.set('Sign up successful!');
       this.clearSignupForm();
     } catch (err) {

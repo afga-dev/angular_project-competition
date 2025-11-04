@@ -3,9 +3,9 @@ import { inject, Injectable } from '@angular/core';
 import { CompetitionCreateInterface } from '../models/competition-create.interface';
 import { Observable } from 'rxjs';
 import { CompetitionInterface } from '../models/competition.interface';
-import { API_URL } from '../app.config';
 import { CompetitionMessageInterface } from '../models/competition-message.interface';
 import { SummaryInterface } from '../models/summary.interface';
+import { API_URL } from './api.tokens';
 
 @Injectable({
   providedIn: 'root',

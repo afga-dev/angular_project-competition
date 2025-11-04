@@ -1,47 +1,29 @@
-import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, signal } from '@angular/core';
-import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { UserInterface } from '../models/user.interface';
-import { UserSigninInterface } from '../models/user-signin.interface';
-import { UserSignupInterface } from '../models/user-signup.interface';
-import { API_URL } from '../app.config';
+import { Injectable, signal } from '@angular/core';
+import { User } from '../models/user.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  private httpClient = inject(HttpClient);
-  private router = inject(Router);
-  private baseUrl = inject(API_URL);
+  private _user = signal<string | null>(null);
+  readonly user = this._user.asReadonly();
 
-  signedupResponse = signal<UserInterface | null>(
-    JSON.parse(localStorage.getItem('response') || 'null')
-  );
+  private _isLoaded = signal<boolean>(false);
+  readonly isLoaded = this._isLoaded.asReadonly();
 
-  setSignedupResponse(response: UserInterface) {
-    localStorage.setItem('response', JSON.stringify(response));
-    this.signedupResponse.set(response);
-    this.router.navigateByUrl('/dashboard');
+  loadUserFromLocalStorage(): void {
+    const storedRole = localStorage.getItem('role');
+    if (storedRole) this._user.set(storedRole);
+    this._isLoaded.set(true);
   }
 
-  onSignup(signupData: UserSignupInterface): Observable<UserInterface> {
-    return this.httpClient.post<UserInterface>(
-      `${this.baseUrl}/register`,
-      signupData
-    );
+  setUser(user: User): void {
+    localStorage.setItem('role', user.role.toString());
+    this._user.set(user.role.toString());
   }
 
-  onSignin(signinData: UserSigninInterface): Observable<UserInterface> {
-    return this.httpClient.post<UserInterface>(
-      `${this.baseUrl}/login`,
-      signinData
-    );
-  }
-
-  onSignout() {
-    localStorage.removeItem('response');
-    this.signedupResponse.set(null);
-    this.router.navigateByUrl('/signin');
+  removeUser(): void {
+    localStorage.removeItem('role');
+    this._user.set(null);
   }
 }
