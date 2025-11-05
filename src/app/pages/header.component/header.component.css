@@ -1,0 +1,85 @@
+/* Header */
+.header {
+  background-image: url("../../assets/images/header.png");
+  background-size: cover;
+  background-position: center;
+  color: white;
+  height: calc(100vh - 56px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  text-transform: uppercase;
+}
+.header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(2px);
+}
+.header-content {
+  position: relative;
+  z-index: 1;
+  padding: 3rem;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+  animation: fadeUp 1.2s ease-in-out;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+/* If the browser supports backdrop-filter applies it */
+@supports (backdrop-filter: blur(8px)) or (-webkit-backdrop-filter: blur(8px)) {
+  .header-content {
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px); /* Safari support */
+  }
+}
+
+/* Header text */
+.header h1 {
+  font-size: clamp(2rem, 6vw, 4rem);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 1px;
+}
+.header p {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  opacity: 0.9;
+}
+
+/* Call-to-action button */
+.cta-btn {
+  margin-top: 1.5rem;
+  font-size: 1.1rem;
+  padding: 0.75rem 2rem;
+  background: #000;
+  color: #fff;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  border: 2px solid transparent;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+.cta-btn:hover {
+  transform: scale(1.05);
+  background: #111;
+  border-color: #000;
+  box-shadow: none;
+}
+
+/* Animation */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
