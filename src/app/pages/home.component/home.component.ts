@@ -3,11 +3,12 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { CompetitionService } from '../../services/competition.service';
 import { SummaryInterface } from '../../models/summary.interface';
+import { HeaderComponent } from "../header.component/header.component";
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, HeaderComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
 })
