@@ -1,0 +1,56 @@
+/* Card */
+.stat-card {
+  background: #212529;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+  text-align: center;
+  padding: 1.75rem 1rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  text-transform: uppercase;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+/* Fallback if backdrop-filter isn't supported by browser */
+@supports not (
+  (backdrop-filter: blur(6px)) or (-webkit-backdrop-filter: blur(6px))
+) {
+  .stat-card {
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+.stat-card-content {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.stat-card:hover .stat-card-content {
+  transform: scale(1.05);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+}
+
+/* Card text */
+.stat-card h5 {
+  font-weight: 600;
+  font-size: clamp(0.9rem, 1vw + 0.5rem, 1.1rem);
+  margin-bottom: 0.5rem;
+  opacity: 0.9;
+  letter-spacing: 0.5px;
+}
+.stat-card p.value {
+  font-size: clamp(2.75rem, 2vw + 0.5rem, 3.5rem);
+  font-weight: 800;
+  letter-spacing: 1px;
+  margin: 0;
+  line-height: 1.1;
+  color: #fff;
+}
+
+/* Skeleton */
+.skeleton-placeholder {
+  background: transparent;
+  box-shadow: none;
+  border: none;
+  aspect-ratio: 1 / 1;
+  width: 100%;
+}
