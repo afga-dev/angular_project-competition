@@ -1,167 +1,123 @@
-<main
+<div
   class="d-flex justify-content-center align-items-center flex-grow-1 w-100 pt-2 pt-md-4"
 >
-  <section
-    id="signup-card"
-    class="card p-4 shadow-sm bg-white border border-secondary"
-    role="form"
-    aria-labelledby="signup-heading"
-  >
-    <form [formGroup]="signupForm" (ngSubmit)="submitSignupForm()" novalidate>
+  <div class="card p-4">
+    <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
       <!-- Header -->
       <div class="text-center mb-4">
-        <i class="bi bi-person-plus fs-1 text-dark" aria-hidden="true"></i>
-        <h3 id="signup-heading" class="mt-2 text-dark">Create your account</h3>
-        <p class="small text-dark">
-          Join today to participate in exciting competitions
-        </p>
+        <h3 class="signup-heading">Welcome</h3>
+        <p class="small">Join the competitions today</p>
       </div>
       <!-- Alerts -->
-      @if (signupMessage()) {
-      <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{ signupMessage() }}
-        <button
-          type="button"
-          class="btn-close"
-          (click)="signupMessage.set(null)"
-          aria-label="Close"
-        ></button>
-      </div>
-      } @if (signupError()) {
-      <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        {{ signupError() }}
-        <button
-          type="button"
-          class="btn-close"
-          (click)="signupError.set(null)"
-          aria-label="Close"
-        ></button>
+      @if(error()) {
+      <div class="alert alert-danger" role="alert">
+        {{ error() }}
       </div>
       }
-      <!-- College name -->
-      <div class="mb-3">
-        <label for="collegeName" class="form-label text-dark"
-          >College name</label
-        >
+      <!-- College -->
+      <div class="mb-4 position-relative">
         <div class="input-group">
-          <span class="input-group-text border-secondary">
-            <i class="bi bi-building" aria-hidden="true"></i>
-          </span>
           <input
             type="text"
             id="collegeName"
-            class="form-control text-dark border-secondary"
-            placeholder="Enter your college name"
+            class="form-control"
+            placeholder="College"
             formControlName="collegeName"
-            autocomplete="organization"
           />
         </div>
-        @if (hasError('collegeName', 'required')) {
-        <span class="text-danger" aria-live="polite">
-          College name is required.
-        </span>
+        @if(hasError('collegeName', 'required')) {
+        <div class="input-error-bubble" aria-live="polite">
+          Please fill out this field.
+        </div>
+        } @if(hasError('collegeName', 'maxlength')) {
+        <div class="input-error-bubble" aria-live="polite">
+          This fill can't be more than 100 characters.
+        </div>
         }
       </div>
-      <!-- Full name -->
-      <div class="mb-3">
-        <label for="fullName" class="form-label text-dark">Full name</label>
+      <!-- College -->
+      <div class="mb-4 position-relative">
         <div class="input-group">
-          <span class="input-group-text border-secondary">
-            <i class="bi bi-person" aria-hidden="true"></i>
-          </span>
           <input
             type="text"
             id="fullName"
-            class="form-control text-dark border-secondary"
-            placeholder="Enter your full name"
+            class="form-control"
+            placeholder="Full name"
             formControlName="fullName"
-            autocomplete="name"
           />
         </div>
-        @if (hasError('fullName', 'required')) {
-        <span class="text-danger" aria-live="polite">
-          Full name is required.
-        </span>
-        } @if (hasError('fullName', 'minlength')) {
-        <span class="text-danger" aria-live="polite">
-          Full name must be at least 3 characters.
-        </span>
+        @if(hasError('fullName', 'required')) {
+        <div class="input-error-bubble" aria-live="polite">
+          Please fill out this field.
+        </div>
+        } @if(hasError('fullName', 'maxlength')) {
+        <div class="input-error-bubble" aria-live="polite">
+          This fill can't be more than 100 characters.
+        </div>
         }
       </div>
       <!-- Email -->
-      <div class="mb-3">
-        <label for="email" class="form-label text-dark">Email</label>
+      <div class="mb-4 position-relative">
         <div class="input-group">
-          <span class="input-group-text border-secondary">
-            <i class="bi bi-envelope" aria-hidden="true"></i>
-          </span>
           <input
-            type="email"
+            type="text"
             id="email"
-            class="form-control text-dark border-secondary"
-            placeholder="Enter your email"
+            class="form-control"
+            placeholder="Email"
             formControlName="email"
-            autocomplete="email"
           />
         </div>
-        @if (hasError('email', 'required')) {
-        <span class="text-danger" aria-live="polite"> Email is required. </span>
-        } @if (hasError('email', 'email')) {
-        <span class="text-danger" aria-live="polite">
-          Email must be valid.
-        </span>
+        @if(hasError('email', 'required')) {
+        <div class="input-error-bubble" aria-live="polite">
+          Please fill out this field.
+        </div>
+        } @if(hasError('email', 'maxlength')) {
+        <div class="input-error-bubble" aria-live="polite">
+          This fill can't be more than 254 characters.
+        </div>
+        } @if(hasError('email', 'email')) {
+        <div class="input-error-bubble" aria-live="polite">
+          This fill must be a valid email.
+        </div>
         }
       </div>
       <!-- Password -->
-      <div class="mb-3">
-        <label for="password" class="form-label text-dark">Password</label>
+      <div class="mb-4 position-relative">
         <div class="input-group">
-          <span class="input-group-text border-secondary">
-            <i class="bi bi-lock" aria-hidden="true"></i>
-          </span>
           <input
             [type]="showPassword ? 'text' : 'password'"
             id="password"
-            class="form-control text-dark border-secondary"
-            placeholder="Enter your password"
+            class="form-control"
+            placeholder="Password"
             formControlName="password"
-            autocomplete="new-password"
           />
-          <button
-            type="button"
-            class="btn btn-outline-secondary"
-            (click)="togglePassword()"
-            title="Toogle"
-            [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
-          >
-            <i [ngClass]="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
-          </button>
         </div>
-        @if (hasError('password', 'required')) {
-        <span class="text-danger" aria-live="polite">
-          Password is required.
-        </span>
-        } @if (hasError('password', 'minlength')) {
-        <span class="text-danger" aria-live="polite">
-          Password must be at least 3 characters.
-        </span>
+        @if(hasError('password', 'required')) {
+        <div class="input-error-bubble" aria-live="polite">
+          Please fill out this field.
+        </div>
+        } @if(hasError('password', 'maxlength')) {
+        <div class="input-error-bubble" aria-live="polite">
+          This fill can't be more than 128 characters.
+        </div>
         }
       </div>
-      <!-- Button -->
-      <button
-        type="submit"
-        class="btn btn-dark w-100 mb-3"
-        [disabled]="signupForm.invalid"
-      >
-        Sign up
-      </button>
       <!-- Footer -->
+      <div class="d-grid mb-4">
+        <button
+          type="submit"
+          class="footer-button btn btn-dark"
+          [disabled]="signUpForm.invalid || isLoading()"
+        >
+          Sign up
+        </button>
+      </div>
       <div class="text-center">
         <p class="small text-dark">
           Already have an account?
-          <a routerLink="/signin" class="text-primary">Sign in</a>
+          <a routerLink="/signin">Sign in</a>
         </p>
       </div>
     </form>
-  </section>
-</main>
+  </div>
+</div>
