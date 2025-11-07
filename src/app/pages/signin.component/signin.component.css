@@ -1,0 +1,100 @@
+/* Host */
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 56px);
+  padding: 1rem;
+}
+
+/* Sign in card layout */
+.card {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  width: 100%;
+  max-width: 420px;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  text-transform: uppercase;
+}
+.signup-heading {
+  margin: 0.5rem 0 0.2rem;
+  font-weight: 400;
+}
+
+/* Form */
+.form-control {
+  border: 1px solid #ccc;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* Sign in button */
+.btn-dark {
+  border: none;
+  border-radius: 0;
+  padding: 0.75rem;
+  transition: background 0.3s ease;
+}
+.btn-dark:hover {
+  background-color: #333;
+}
+
+/* Alert */
+.alert {
+  border-radius: 0;
+  border: none;
+}
+.position-relative {
+  position: relative;
+}
+.input-error-bubble {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(5px);
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 0.3rem 0.6rem;
+  border-radius: 0.25rem;
+  font-size: 0.8rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  white-space: nowrap;
+  z-index: 5;
+  opacity: 0;
+  animation: slideIn 0.2s forwards;
+}
+
+/* Sign in button */
+.signin-button {
+  text-transform: uppercase;
+}
+
+/* Link */
+a:link,
+a:visited,
+a:active {
+  color: #808080;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #000;
+  text-decoration: none;
+}
+
+/* Animation */
+@keyframes slideIn {
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* Reponsive */
+@media (max-width: 576px) {
+  .card {
+    padding: 1.5rem 1rem;
+  }
+}

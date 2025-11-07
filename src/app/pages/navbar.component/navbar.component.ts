@@ -17,6 +17,10 @@ export class NavbarComponent {
 
   user = computed(() => this.userService.user());
 
+  onSignOut(): void {
+    this.userService.removeUser();
+  }
+
   // Scroll helpers
   scrollToHome(): void {
     if (this.router.url === '/') {
