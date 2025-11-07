@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { SignIn } from '../../models/signin.interface';
 import { firstValueFrom } from 'rxjs';
@@ -15,44 +15,53 @@ import { AuthService } from '../../services/auth.service';
   styleUrl: './signin.component.css',
 })
 export class SigninComponent {
+  private formBuilder = inject(FormBuilder);
+  private router = inject(Router);
+
   private authService = inject(AuthService);
   private userService = inject(UserService);
-  private formBuilder = inject(FormBuilder);
 
-  readonly isSubmitting = signal(false);
-  readonly signinError = signal<string | null>(null);
+  private _error = signal<string | null>(null);
+  readonly error = this._error.asReadonly();
+
+  private _isLoading = signal<boolean>(false);
+  readonly isLoading = this._isLoading.asReadonly();
 
   showPassword = false;
 
-  readonly signinForm = this.formBuilder.nonNullable.group({
-    email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required]],
+  readonly signInForm = this.formBuilder.nonNullable.group({
+    email: [
+      '',
+      [Validators.required, Validators.maxLength(254), Validators.email],
+    ],
+    password: ['', [Validators.required, Validators.maxLength(128)]],
   });
 
-  togglePassword() {
-    this.showPassword = !this.showPassword;
-  }
-
-  hasError(controlName: string, error: string): boolean {
-    const control = this.signinForm.get(controlName);
-    return !!(control?.touched && control?.hasError(error));
-  }
-
-  async submitSigninForm() {
-    if (this.signinForm.invalid || this.isSubmitting()) return;
-
-    const signinData: SignIn = this.signinForm.getRawValue();
-
-    this.isSubmitting.set(true);
-    this.signinError.set(null);
-
+  async onSubmit() {
     try {
-      const user = await firstValueFrom(this.authService.signIn(signinData));
+      const signIn: SignIn = this.signInForm.getRawValue();
+      signIn.email = signIn.email.trim();
+      signIn.password = signIn.password.trim();
+
+      if (this.signInForm.invalid || this._isLoading() || !signIn) return;
+
+      this._isLoading.set(true);
+
+      const user = await firstValueFrom(this.authService.signIn(signIn));
       this.userService.setUser(user);
+
+      this.router.navigateByUrl('/dashboard');
     } catch (err) {
-      this.signinError.set(`Email and/or password doesn't match.`);
+      this._error.set('Incorrect email or password.');
+      // console.error(err);
     } finally {
-      this.isSubmitting.set(false);
+      this._isLoading.set(false);
     }
+  }
+
+  // Helper for form validation state
+  hasError(controlName: string, error: string): boolean {
+    const control = this.signInForm.get(controlName);
+    return !!(control?.touched && control?.hasError(error));
   }
 }
