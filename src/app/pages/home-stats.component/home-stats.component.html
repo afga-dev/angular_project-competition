@@ -1,0 +1,26 @@
+<section class="container-fluid stats-section py-5">
+  <div class="container">
+    <div class="row g-4 justify-content-center">
+      @for(stat of stats(); track stat) {
+      <div class="col-12 col-sm-6 col-md-3">
+        @if(isLoading()) {
+        <div
+          class="stat-card h-100 d-flex flex-column justify-content-center skeleton-placeholder"
+        ></div>
+        } @else {
+        <div
+          class="stat-card h-100 d-flex flex-column justify-content-center"
+          appLazyLoadingDirective
+          [delay]="stat.index * 200"
+        >
+          <div class="stat-card-content">
+            <h5>{{ stat.title }}</h5>
+            <p class="value">{{ stat.value }}</p>
+          </div>
+        </div>
+        }
+      </div>
+      }
+    </div>
+  </div>
+</section>
