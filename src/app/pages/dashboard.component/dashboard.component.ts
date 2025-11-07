@@ -14,7 +14,7 @@ import { UserService } from '../../services/user.service';
   standalone: true,
   imports: [CommonModule, NgxPaginationModule, ReactiveFormsModule],
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css'],
+  styleUrl: './dashboard.component.css',
 })
 export class DashboardComponent {
   private formBuilder = inject(FormBuilder);

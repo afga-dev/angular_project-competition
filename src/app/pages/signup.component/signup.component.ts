@@ -1,69 +1,78 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { UserService } from '../../services/user.service';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { SignUp } from '../../models/signup.interface';
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
+import { UserService } from '../../services/user.service';
+import { User } from '../../models/user.interface';
 
 @Component({
   selector: 'app-signup',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './signup.component.html',
-  styleUrls: ['./signup.component.css'],
+  styleUrls: ['./signup.component.css', '../../shared/auth.style.css'],
 })
 export class SignupComponent {
+  private formBuilder = inject(FormBuilder);
+  private router = inject(Router);
+
   private authService = inject(AuthService);
   private userService = inject(UserService);
-  private formBuilder = inject(FormBuilder);
 
-  readonly isSubmitting = signal(false);
-  readonly signupMessage = signal<string | null>(null);
-  readonly signupError = signal<string | null>(null);
+  private _error = signal<string | null>(null);
+  readonly error = this._error.asReadonly();
+
+  private _isLoading = signal<boolean>(false);
+  readonly isLoading = this._isLoading.asReadonly();
 
   showPassword = false;
 
-  readonly signupForm = this.formBuilder.nonNullable.group({
-    fullName: ['', [Validators.required, Validators.minLength(3)]],
-    email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(3)]],
-    collegeName: ['', Validators.required],
+  readonly signUpForm = this.formBuilder.nonNullable.group({
+    fullName: ['', [Validators.required, Validators.maxLength(100)]],
+    email: [
+      '',
+      [Validators.required, Validators.maxLength(254), Validators.email],
+    ],
+    password: ['', [Validators.required, Validators.maxLength(128)]],
+    collegeName: ['', Validators.required, Validators.maxLength(100)],
   });
 
-  togglePassword() {
-    this.showPassword = !this.showPassword;
-  }
-
-  hasError(controlName: string, error: string): boolean {
-    const control = this.signupForm.get(controlName);
-    return !!(control?.touched && control?.hasError(error));
-  }
-
-  async submitSignupForm() {
-    if (this.signupForm.invalid || this.isSubmitting()) return;
-
-    const signupData: SignUp = this.signupForm.getRawValue();
-
-    this.isSubmitting.set(true);
-    this.signupMessage.set(null);
-    this.signupError.set(null);
-
+  async onSubmit() {
     try {
-      await firstValueFrom(this.authService.signUp(signupData));
-      this.signupMessage.set('Sign up successful!');
-      this.clearSignupForm();
+      const signUp: SignUp = this.signUpForm.getRawValue();
+      signUp.collegeName = signUp.collegeName.trim();
+      signUp.fullName = signUp.fullName.trim();
+      signUp.email = signUp.email.trim();
+      signUp.password = signUp.password.trim();
+
+      if (this.signUpForm.invalid || this._isLoading() || !signUp) return;
+
+      this._isLoading.set(true);
+
+      await firstValueFrom(this.authService.signUp(signUp));
+      this.userService.setUser({
+        userId: 0,
+        fullName: '',
+        email: '',
+        collegeName: '',
+        role: 'user',
+      } as User);
+
+      this.router.navigateByUrl('/dashboard');
     } catch (err) {
-      this.signupError.set('Email is already registered.');
+      this._error.set('Email is already registered.');
+      // console.error(err);
     } finally {
-      this.isSubmitting.set(false);
+      this._isLoading.set(false);
     }
   }
 
-  clearSignupForm() {
-    this.signupForm.reset();
-    this.signupForm.markAsPristine();
-    this.signupForm.markAsUntouched();
+  // Helper for form validation state
+  hasError(controlName: string, error: string): boolean {
+    const control = this.signUpForm.get(controlName);
+    return !!(control?.touched && control?.hasError(error));
   }
 }
