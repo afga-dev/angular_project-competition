@@ -6,9 +6,9 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     loadComponent: () =>
-      import('./pages/dashboard.component/dashboard.component').then(
-        (c) => c.DashboardComponent
-      ),
+      import(
+        './pages/competitions-list.component/competitions-list.component'
+      ).then((c) => c.CompetitionsList),
   },
   {
     path: 'signin',

@@ -1,132 +1,7 @@
 <main class="container-fluid py-4">
   <div class="row g-4">
     <div class="col-12 col-lg-7">
-      <div class="card shadow-sm bg-white border border-secondary">
-        <div class="card-header bg-dark text-white">
-          <h5 class="mb-0">Competitions</h5>
-        </div>
-        <!-- Table -->
-        <div class="card-body">
-          @if (isLoading()) {
-          <div class="d-flex justify-content-center py-5">
-            <div class="spinner-border text-dark" role="status">
-              <span class="visually-hidden">Loading...</span>
-            </div>
-          </div>
-          } @if (!isLoading()) {
-          <div class="table-responsive">
-            <table class="table table-striped align-middle mb-0">
-              <thead class="table-light">
-                <tr>
-                  <th scope="col">No.</th>
-                  <th scope="col">Title</th>
-                  <th scope="col">Description</th>
-                  <th scope="col">Start Date</th>
-                  <th scope="col">End Date</th>
-                  <th scope="col">Status</th>
-                  @if (userService.user() == 'admin') {
-                  <th scope="col" class="text-center">Actions</th>
-                  }
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  *ngFor="
-                    let competition of competitions()
-                      | paginate
-                        : { itemsPerPage: 10, currentPage: currentPage() };
-                    let i = index
-                  "
-                >
-                  <td>{{ (currentPage() - 1) * 10 + i + 1 }}</td>
-                  <td>{{ competition.title }}</td>
-                  <td>{{ competition.description }}</td>
-                  <td>{{ competition.startDate | date : "MM/dd/yyyy" }}</td>
-                  <td>{{ competition.endDate | date : "MM/dd/yyyy" }}</td>
-                  <td>{{ competition.status }}</td>
-                  @if (userService.user() == 'admin') {
-                  <td class="text-center">
-                    <div class="d-flex gap-1">
-                      <button
-                        type="button"
-                        class="btn btn-sm btn-success flex-fill"
-                        (click)="editCompetition(competition)"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        type="button"
-                        class="btn btn-sm btn-danger flex-fill"
-                        (click)="openDeleteModal(competition)"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </td>
-                  }
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="d-flex justify-content-center mt-3">
-            <pagination-controls
-              (pageChange)="currentPage.set($event)"
-            ></pagination-controls>
-          </div>
-          }
-        </div>
-      </div>
-    </div>
-    <!-- Modal -->
-    <div
-      id="delete-modal"
-      class="modal fade"
-      [class.show]="isDeleteModalVisible()"
-      [style.display]="isDeleteModalVisible() ? 'block' : 'none'"
-      tabindex="-1"
-    >
-      <div id="delete-modal-backdrop" class="modal-backdrop fade show"></div>
-      <div
-        id="delete-modal-dialog"
-        class="modal-dialog modal-dialog-centered"
-        style="position: relative; z-index: 1060"
-      >
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Confirm deletion</h5>
-            <button
-              type="button"
-              class="btn-close"
-              title="Close"
-              (click)="closeDeleteModal()"
-            ></button>
-          </div>
-          <div class="modal-body">
-            Are you sure you want to delete
-            <strong>{{ competition()?.title }}</strong>
-            competition?
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              (click)="closeDeleteModal()"
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
-              class="btn btn-danger"
-              (click)="confirmDelete()"
-            >
-              Delete
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- Card -->
-    <div class="col-12 col-lg-5">
+      <div class="col-12 col-lg-5">
       <div class="card shadow-sm bg-white border border-secondary">
         <div class="card-header bg-dark text-white">
           <h5 class="mb-0">Add Competition</h5>
@@ -261,6 +136,7 @@
             </div>
           </form>
         </div>
+      </div>
       </div>
     </div>
   </div>
