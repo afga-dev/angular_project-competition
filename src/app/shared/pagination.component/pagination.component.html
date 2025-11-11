@@ -1,0 +1,29 @@
+@if(totalPages() > 1 && !disabled()) {
+<div>
+  <ul class="pagination justify-content-center mb-0">
+    <!-- Previous button -->
+    <li class="page-item" [class.disabled]="current() === 1">
+      <a class="page-link" (click)="goTo(current() - 1)">&lt;</a>
+    </li>
+    <!-- Page numbers -->
+    <li
+      class="page-item"
+      *ngFor="let p of visiblePages()"
+      [class.active]="p === current()"
+      [class.disabled]="p === '…'"
+    >
+      @if(p !== '…') {
+      <a class="page-link" (click)="typeof p === 'number' && goTo(p)">{{
+        p
+      }}</a>
+      } @else {
+      <span class="page-link">…</span>
+      }
+    </li>
+    <!-- Next button -->
+    <li class="page-item" [class.disabled]="current() === totalPages()">
+      <a class="page-link" (click)="goTo(current() + 1)">&gt;</a>
+    </li>
+  </ul>
+</div>
+}

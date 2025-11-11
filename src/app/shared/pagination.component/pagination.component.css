@@ -1,0 +1,30 @@
+.pagination {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+}
+.page-link,
+.page-item a.page-link,
+.page-item span.page-link {
+  color: #000;
+  background-color: transparent;
+  border: none;
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+  border-radius: 0 !important;
+  min-width: 2rem;
+  text-align: center;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.page-item.active .page-link,
+.page-item.active a.page-link {
+  background-color: #000;
+  color: #fff;
+}
+.page-item.disabled .page-link,
+.page-item.disabled a.page-link {
+  cursor: default;
+}
