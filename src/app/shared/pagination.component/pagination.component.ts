@@ -5,6 +5,7 @@ import {
   output,
   OnChanges,
   effect,
+  SimpleChanges,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -25,20 +26,20 @@ export class PaginationComponent implements OnChanges {
   private _current = signal(1);
   readonly current = this._current.asReadonly();
 
-  private _totalPages = signal(1);
+  private _total = signal(1);
 
-  private _visiblePages = signal<(number | string)[]>([]);
-  readonly visiblePages = this._visiblePages.asReadonly();
+  private _maximum = signal<(number | string)[]>([]);
+  readonly maximum = this._maximum.asReadonly();
 
-  readonly _computePages = effect(() => {
-    const total = this._totalPages();
+  readonly computePages = effect(() => {
+    const total = this._total();
     const current = this._current();
     const maxVisible = this.maximumVisible();
     const pages: (number | string)[] = [];
 
     if (total <= maxVisible + 2) {
       for (let i = 1; i <= total; i++) pages.push(i);
-      this._visiblePages.set(pages);
+      this._maximum.set(pages);
       return;
     }
 
@@ -52,18 +53,17 @@ export class PaginationComponent implements OnChanges {
     }
 
     pages.push('…');
-
     for (let i = windowStart; i <= windowEnd; i++) pages.push(i);
-
     pages.push('…');
+
     pages.push(total);
 
-    this._visiblePages.set(pages);
+    this._maximum.set(pages);
   });
 
-  ngOnChanges() {
-    if (this.currentPage()) this._current.set(this.currentPage());
-    if (this.totalPages()) this._totalPages.set(this.totalPages());
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['currentPage']) this._current.set(this.currentPage());
+    if (changes['totalPages']) this._total.set(this.totalPages());
   }
 
   goTo(page: number) {
