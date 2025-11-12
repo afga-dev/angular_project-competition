@@ -6,6 +6,7 @@ import {
   signal,
   HostListener,
   OnInit,
+  AfterViewInit,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -22,7 +23,7 @@ import { PaginationComponent } from '../../shared/pagination.component/paginatio
   templateUrl: './competitions-list.component.html',
   styleUrl: './competitions-list.component.css',
 })
-export class CompetitionsList implements OnInit {
+export class CompetitionsList implements OnInit, AfterViewInit {
   private userService = inject(UserService);
   private competitionService = inject(CompetitionService);
 
@@ -35,9 +36,6 @@ export class CompetitionsList implements OnInit {
   private _currentPage = signal<number>(1);
   readonly currentPage = this._currentPage.asReadonly();
 
-  private _windowWidth = signal(window.innerWidth);
-  readonly windowWidth = this._windowWidth.asReadonly();
-
   private _error = signal<string | null>(null);
   readonly error = this._error.asReadonly();
 
@@ -45,9 +43,11 @@ export class CompetitionsList implements OnInit {
   readonly searchQuery = signal<string>('');
   readonly itemsPerPage = signal<number>(10);
 
+  private _windowWidth = window.innerWidth;
+
   readonly user = computed(() => this.userService.user());
 
-  private filteredCompetitions = computed(() => {
+  readonly filteredCompetitions = computed(() => {
     const term = this.searchQuery().trim().toLowerCase();
     return this.competitions().filter(
       (c) =>
@@ -56,12 +56,15 @@ export class CompetitionsList implements OnInit {
     );
   });
 
-  readonly paginatedCompetitions = computed(() => {
+  readonly displayedRows = computed(() => {
     const start = (this.currentPage() - 1) * this.itemsPerPage();
-    return this.filteredCompetitions().slice(
-      start,
-      start + this.itemsPerPage()
-    );
+    const end = start + this.itemsPerPage();
+    return this.filteredCompetitions()
+      .slice(start, end)
+      .map((competition, i) => ({
+        competition,
+        index: start + i + 1,
+      }));
   });
 
   readonly totalPages = computed(() =>
@@ -71,24 +74,35 @@ export class CompetitionsList implements OnInit {
     )
   );
 
+  readonly loadingArray = computed(() =>
+    Array.from({ length: this.itemsPerPage() }, (_, i) => ({ id: i }))
+  );
+
   readonly searchEffect = effect(() => {
-    this.searchQuery;
+    this.searchQuery();
     this._currentPage.set(1);
   });
 
   ngOnInit(): void {
     this.loadCompetitions();
-    this.setHeight();
+    this.calculateHeight();
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.tableVisible.set(true);
+    });
   }
 
   private async loadCompetitions() {
-    this._isLoading.set(true);
-
     try {
+      this._isLoading.set(true);
+
       const competitions = await firstValueFrom(
         this.competitionService.onRead()
       );
       this._competitions.set(competitions);
+
       this._currentPage.set(1);
     } catch (err) {
       // console.error(err);
@@ -97,24 +111,24 @@ export class CompetitionsList implements OnInit {
       setTimeout(() => {
         this.tableVisible.set(true);
         this._isLoading.set(false);
-      }, 100);
+      }, 300);
     }
   }
 
   @HostListener('window:resize')
   onResize() {
-    this._windowWidth.set(window.innerWidth);
-    this.setHeight();
+    this._windowWidth = window.innerWidth;
+    this.calculateHeight();
   }
 
   getColspan(): number {
     const base = this.user() === 'admin' ? 7 : 6;
-    if (this.windowWidth() <= 630) return 3;
-    if (this.windowWidth() <= 1460) return base - 2;
+    if (this._windowWidth <= 630) return 3;
+    if (this._windowWidth <= 1460) return base - 2;
     return base;
   }
 
-  private setHeight(): void {
+  private calculateHeight(): void {
     const navbar = 56,
       card = 64,
       searchBar = 48,
