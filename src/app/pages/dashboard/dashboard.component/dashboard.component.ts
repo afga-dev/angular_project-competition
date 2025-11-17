@@ -7,31 +7,37 @@ import {
   HostListener,
   OnInit,
   AfterViewInit,
+  input,
+  output,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { CompetitionInterface } from '../../models/competition.interface';
-import { CompetitionService } from '../../services/competition.service';
-import { UserService } from '../../services/user.service';
+import { Competition } from '../../../models/competition.interface';
+import { CompetitionService } from '../../../services/competition.service';
+import { UserService } from '../../../services/user.service';
 import { firstValueFrom } from 'rxjs';
-import { PaginationComponent } from '../../shared/pagination.component/pagination.component';
+import { PaginationComponent } from '../../../shared/pagination.component/pagination.component';
 
 @Component({
-  selector: 'app-competitions-list',
+  selector: 'app-dashboard',
   standalone: true,
   imports: [CommonModule, FormsModule, PaginationComponent],
-  templateUrl: './competitions-list.component.html',
-  styleUrl: './competitions-list.component.css',
+  templateUrl: './dashboard.component.html',
+  styleUrl: './dashboard.component.css',
 })
-export class CompetitionsList implements OnInit, AfterViewInit {
+export class Dashboard implements OnInit, AfterViewInit {
   private userService = inject(UserService);
   private competitionService = inject(CompetitionService);
 
   private _isLoading = signal<boolean>(true);
   readonly isLoading = this._isLoading.asReadonly();
 
-  private _competitions = signal<CompetitionInterface[]>([]);
-  readonly competitions = this._competitions.asReadonly();
+  private _competitions = signal<Competition[]>([]);
+  readonly competitions = computed(() =>
+    this.parentCompetitions()?.length
+      ? this.parentCompetitions()!
+      : this._competitions()
+  );
 
   private _currentPage = signal<number>(1);
   readonly currentPage = this._currentPage.asReadonly();
@@ -39,13 +45,22 @@ export class CompetitionsList implements OnInit, AfterViewInit {
   private _error = signal<string | null>(null);
   readonly error = this._error.asReadonly();
 
+  private _windowWidth = signal(window.innerWidth);
+
   readonly tableVisible = signal<boolean>(false);
   readonly searchQuery = signal<string>('');
   readonly itemsPerPage = signal<number>(10);
 
-  private _windowWidth = window.innerWidth;
+  isEmbedded = input<boolean>(false);
+  parentCompetitions = input<Competition[] | null>(null);
+  childEditCompetition = output<Competition>();
+  childDeleteCompetition = output<Competition>();
 
   readonly user = computed(() => this.userService.user());
+
+  private _parentCompetitions = computed(
+    () => !!this.parentCompetitions()?.length
+  );
 
   readonly filteredCompetitions = computed(() => {
     const term = this.searchQuery().trim().toLowerCase();
@@ -84,7 +99,10 @@ export class CompetitionsList implements OnInit, AfterViewInit {
   });
 
   ngOnInit(): void {
-    this.loadCompetitions();
+    if (!this._parentCompetitions()) {
+      this.loadCompetitions();
+    }
+
     this.calculateHeight();
   }
 
@@ -94,7 +112,7 @@ export class CompetitionsList implements OnInit, AfterViewInit {
     });
   }
 
-  private async loadCompetitions() {
+  private async loadCompetitions(): Promise<void> {
     try {
       this._isLoading.set(true);
 
@@ -106,7 +124,7 @@ export class CompetitionsList implements OnInit, AfterViewInit {
       this._currentPage.set(1);
     } catch (err) {
       // console.error(err);
-      this._error.set("Sorry, the data can't be retrieved.");
+      this._error.set("Sorry, the data can't be retrieved");
     } finally {
       setTimeout(() => {
         this.tableVisible.set(true);
@@ -117,29 +135,44 @@ export class CompetitionsList implements OnInit, AfterViewInit {
 
   @HostListener('window:resize')
   onResize() {
-    this._windowWidth = window.innerWidth;
+    this._windowWidth.set(window.innerWidth);
     this.calculateHeight();
   }
 
   getColspan(): number {
+    const width = this._windowWidth();
     const base = this.user() === 'admin' ? 7 : 6;
-    if (this._windowWidth <= 630) return 3;
-    if (this._windowWidth <= 1460) return base - 2;
+
+    if (width <= 630) return 3;
+    if (width <= 1460) return base - 2;
     return base;
   }
 
   private calculateHeight(): void {
-    const navbar = 56,
-      card = 64,
-      searchBar = 48,
-      pagination = 40,
-      row = 48;
-    const availableHeight =
-      window.innerHeight - (navbar + card + searchBar + pagination);
-    this.itemsPerPage.set(Math.max(1, Math.floor(availableHeight / row)));
+    const constants = {
+      navbar: 56,
+      card: 64,
+      searchBar: 48,
+      pagination: 40,
+      row: 48,
+    };
 
-    if (this.currentPage() > this.totalPages())
-      this._currentPage.set(this.totalPages());
+    const usedHeight =
+      constants.navbar +
+      constants.card +
+      constants.searchBar +
+      constants.pagination;
+
+    const availableHeight = window.innerHeight - usedHeight;
+
+    this.itemsPerPage.set(
+      Math.max(1, Math.floor(availableHeight / constants.row))
+    );
+
+    const maxPages = this.totalPages();
+    if (this.currentPage() > maxPages) {
+      this._currentPage.set(maxPages);
+    }
   }
 
   setCurrentPage(page: number): void {
@@ -147,6 +180,11 @@ export class CompetitionsList implements OnInit, AfterViewInit {
     this._currentPage.set(page);
   }
 
-  editCompetition(_: CompetitionInterface) {}
-  openDeleteModal(_: CompetitionInterface) {}
+  editCompetition(competition: Competition) {
+    this.childEditCompetition.emit(competition);
+  }
+
+  deleteCompetition(competition: Competition) {
+    this.childDeleteCompetition.emit(competition);
+  }
 }
