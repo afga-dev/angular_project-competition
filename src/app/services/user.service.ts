@@ -22,7 +22,7 @@ export class UserService {
     this._user.set(user.role.toString());
   }
 
-  removeUser(): void {
+  deleteUser(): void {
     localStorage.removeItem('role');
     this._user.set(null);
   }

@@ -1,9 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { CompetitionCreateInterface } from '../models/competition-create.interface';
 import { Observable } from 'rxjs';
-import { CompetitionInterface } from '../models/competition.interface';
-import { CompetitionMessageInterface } from '../models/competition-message.interface';
+import {
+  Competition,
+  CompetitionCreate,
+  CompetitionResponse,
+} from '../models/competition.interface';
 import { SummaryInterface } from '../models/summary.interface';
 import { API_URL } from './api.tokens';
 
@@ -20,32 +22,30 @@ export class CompetitionService {
     );
   }
 
-  onCreate(
-    createData: CompetitionCreateInterface
-  ): Observable<CompetitionInterface> {
-    return this.httpClient.post<CompetitionInterface>(
+  onCreate(createData: CompetitionCreate): Observable<Competition> {
+    return this.httpClient.post<Competition>(
       `${this.baseUrl}/competition`,
       createData
     );
   }
 
-  onRead(): Observable<CompetitionInterface[]> {
-    return this.httpClient.get<CompetitionInterface[]>(
+  onRead(): Observable<Competition[]> {
+    return this.httpClient.get<Competition[]>(
       `${this.baseUrl}/getallcompetition`
     );
   }
 
-  onDelete(id: number): Observable<CompetitionMessageInterface> {
-    return this.httpClient.delete<CompetitionMessageInterface>(
+  onDelete(id: number): Observable<CompetitionResponse> {
+    return this.httpClient.delete<CompetitionResponse>(
       `${this.baseUrl}/delete/${id}`
     );
   }
 
   onUpdate(
     id: number,
-    competition: CompetitionInterface
-  ): Observable<CompetitionMessageInterface> {
-    return this.httpClient.put<CompetitionMessageInterface>(
+    competition: Competition
+  ): Observable<CompetitionResponse> {
+    return this.httpClient.put<CompetitionResponse>(
       `${this.baseUrl}/update/${id}`,
       competition
     );

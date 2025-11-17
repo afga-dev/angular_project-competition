@@ -1,0 +1,25 @@
+/* Table container */
+.table-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 56px);
+  padding: 1rem;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.delete-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1055;
+}
+.delete-modal-backdrop {
+    position: absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    z-index: 1050;
+}

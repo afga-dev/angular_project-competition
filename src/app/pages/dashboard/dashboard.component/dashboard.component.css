@@ -3,10 +3,17 @@
   display: flex;
   flex-direction: column;
   height: calc(100vh - 56px);
-  width: 100vw;
+  min-height: 100vh;
   padding: 1rem;
   box-sizing: border-box;
   overflow: hidden;
+}
+.table-container.full-width {
+  width: 100%;
+}
+.table-container.embedded-table {
+  height: auto;
+  padding: 0;
 }
 .table-wrapper {
   width: 100%;
@@ -73,21 +80,29 @@ table td:nth-child(7) {
 }
 
 /* Hover effect */
-table tbody tr:hover {
-  transform: translateY(-0.6px);
-  transition: transform 0.2s ease;
+.table > tbody > tr:hover > * {
+  background-color: #e9ecef;
+  transition: background-color 0.2s ease;
 }
 
 /* Table fade-in */
 .fade-table {
   opacity: 0;
   transform: translateY(10px);
-  transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1),
-    transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .fade-table.show {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* Button */
+.table-icon-btn {
+  padding: 0.1rem;
+  font-size: 0.9rem;
+  border-radius: 4px;
+  line-height: 1;
 }
 
 /* Skeleton */
