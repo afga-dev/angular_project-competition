@@ -1,4 +1,4 @@
-/* Table container */
+/* Container */
 .table-container {
   display: flex;
   flex-direction: column;
@@ -7,19 +7,198 @@
   box-sizing: border-box;
   overflow: hidden;
 }
-.delete-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1055;
+
+/* Form */
+.add-competition-card {
+  border-radius: 0;
+  border: 1px solid rgba(0, 0, 0, 0.175);
+  overflow: hidden;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  opacity: 0;
+  transform: translateY(10px);
+  text-transform: uppercase;
+  transition: opacity 0.4s ease, transform 0.4s ease;
 }
-.delete-modal-backdrop {
-    position: absolute;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    z-index: 1050;
+.add-competition-card.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+.add-competition-header {
+  background-color: #343a40;
+  color: #fff;
+  border: none;
+  border-radius: 0;
+  padding: 0.75rem 1rem;
+}
+
+/* Form input */
+.square-input {
+  border-radius: 0;
+  border: 1px solid #ced4da;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.square-input:focus {
+  box-shadow: none;
+}
+
+/* Form button */
+.btn.table-icon-btn {
+  border-radius: 0;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+.btn-success.table-icon-btn {
+  background-color: #198754;
+  color: #fff;
+  border: none;
+}
+.btn-success.table-icon-btn:hover {
+  background-color: #146c43;
+}
+.btn-danger.table-icon-btn {
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+}
+.btn-danger.table-icon-btn:hover {
+  background-color: #b02a37;
+}
+
+/* Modal */
+.delete-modal {
+  position: fixed;
+  top: 56px;
+  left: 0;
+  width: 100%;
+  height: calc(100vh - 56px);
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(4px);
+  z-index: 1055;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+.delete-modal.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+.delete-modal-content {
+  background-color: #fff;
+  border-radius: 0;
+  border: none;
+  box-shadow: 0 0.2rem 0.35rem rgba(0, 0, 0, 0.25);
+  max-width: 420px;
+  width: 100%;
+  text-transform: uppercase;
+  opacity: 0;
+  transform: translateY(15px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+.delete-modal.show .delete-modal-content {
+  opacity: 1;
+  transform: translateY(0);
+}
+.delete-modal.closing {
+  opacity: 0;
+  pointer-events: none;
+}
+.delete-modal.closing .delete-modal-content {
+  opacity: 0;
+  transform: translateY(15px);
+}
+
+/* Modal header */
+.delete-modal-header {
+  background-color: #343a40;
+  color: #fff;
+  padding: 0.6rem 1rem;
+  border-bottom: none;
+}
+.delete-modal-header .modal-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* Modal body */
+.delete-modal-body {
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+}
+
+/* Modal footer */
+.delete-modal-footer {
+  border-top: none;
+  padding: 0.65rem 1rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+/* Modal buttons */
+.modal-btn {
+  border-radius: 0;
+  padding: 0.35rem 0.6rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  border: none;
+}
+.modal-btn-dark {
+  background-color: #343a40;
+  color: #fff;
+}
+.modal-btn-dark:hover {
+  background-color: #000;
+}
+.modal-btn-danger {
+  background-color: #dc3545;
+  color: #fff;
+}
+.modal-btn-danger:hover {
+  background-color: #b02a37;
+}
+
+/* Alert */
+.alert {
+  border-radius: 0;
+  border: none;
+}
+
+/* Input error */
+.position-relative {
+  position: relative;
+}
+.input-error-bubble {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(5px);
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 0.3rem 0.6rem;
+  border-radius: 0.25rem;
+  font-size: 0.8rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  white-space: nowrap;
+  z-index: 5;
+  opacity: 1;
+  animation: slideIn 0.2s forwards;
+}
+
+/* Fade in */
+.fade-in {
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+.fade-in.show {
+  opacity: 1;
+  transform: translateY(0);
 }

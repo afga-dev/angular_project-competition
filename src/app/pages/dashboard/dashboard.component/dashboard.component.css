@@ -47,6 +47,7 @@ table td {
 table th {
   background-color: #343a40;
   color: #fff;
+  text-transform: uppercase;
 }
 
 /* Column widths */
@@ -73,6 +74,7 @@ table td:nth-child(5) {
 table th:nth-child(6),
 table td:nth-child(6) {
   width: 10%;
+  text-transform: capitalize;
 }
 table th:nth-child(7),
 table td:nth-child(7) {

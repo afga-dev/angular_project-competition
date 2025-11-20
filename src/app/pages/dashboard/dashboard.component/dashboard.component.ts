@@ -43,7 +43,9 @@ export class Dashboard implements OnInit, AfterViewInit {
   readonly currentPage = this._currentPage.asReadonly();
 
   private _error = signal<string | null>(null);
-  readonly error = this._error.asReadonly();
+  readonly error = computed(() =>
+    this.parentError()?.length ? this.parentError()! : this._error()
+  );
 
   private _windowWidth = signal(window.innerWidth);
 
@@ -53,6 +55,7 @@ export class Dashboard implements OnInit, AfterViewInit {
 
   isEmbedded = input<boolean>(false);
   parentCompetitions = input<Competition[] | null>(null);
+  parentError = input<string | null>(null);
   childEditCompetition = output<Competition>();
   childDeleteCompetition = output<Competition>();
 
