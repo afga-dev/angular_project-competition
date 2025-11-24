@@ -4,6 +4,8 @@
   <main class="flex-grow-1 bg-light">
     <router-outlet />
   </main>
+  @if(isPageLoaded()) {
   <app-footer />
+  }
 </div>
 }

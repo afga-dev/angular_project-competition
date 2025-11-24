@@ -12,6 +12,7 @@
   aspect-ratio: 1 / 1;
   overflow: hidden;
   transition: opacity 0.6s ease, transform 0.6s ease;
+  will-change: transform, opacity;
 }
 
 /* Fallback if backdrop-filter isn't supported by browser */

@@ -1,6 +1,6 @@
 <main class="table-container">
   <div class="row g-4">
-    <!-- Table -->
+    <!-- Table (children) -->
     <div class="col-12 col-lg-9">
       <app-dashboard
         [isEmbedded]="true"
@@ -16,7 +16,6 @@
         class="card add-competition-card fade-in"
         [class.show]="formVisible()"
       >
-        <!-- Header -->
         <div class="card-header add-competition-header">
           <h6 class="mb-0">Add Competition</h6>
         </div>
@@ -36,9 +35,11 @@
           {{ submitError() }}
         </div>
         }
-        <!-- Body -->
         <div class="card-body">
-          <form [formGroup]="dashboardAdminForm" (ngSubmit)="submitDashboardAdminForm()">
+          <form
+            [formGroup]="dashboardAdminForm"
+            (ngSubmit)="submitDashboardAdminForm()"
+          >
             <!-- Title -->
             <div class="mb-3 position-relative">
               <label for="title" class="form-label">Title</label>

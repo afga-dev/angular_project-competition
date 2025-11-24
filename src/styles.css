@@ -12,6 +12,7 @@
 body {
   color: var(--main-color);
   font-family: var(--main-font);
+  line-height: 1.5;
 }
 html {
   scroll-behavior: smooth;

@@ -6,11 +6,12 @@ import {
   signal,
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { DateValidator } from '../../../validators/date.validator';
-import { Competition } from '../../../models/competition.interface';
+import { DateValidator } from '../../../shared/validators/date.validator';
+import { Competition } from '../../../core/models/competition.interface';
 import { firstValueFrom } from 'rxjs';
-import { CompetitionService } from '../../../services/competition.service';
+import { CompetitionService } from '../../../core/services/competition.service';
 import { Dashboard } from '../dashboard.component/dashboard.component';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-dashboard-admin',
@@ -20,10 +21,12 @@ import { Dashboard } from '../dashboard.component/dashboard.component';
   styleUrl: './dashboard-admin.component.css',
 })
 export class DashboardAdmin implements OnInit, AfterViewInit {
+  // Default status for new competitions
   private readonly DEFAULT_STATUS = 'Ongoing';
 
   private formBuilder = inject(FormBuilder);
 
+  private authService = inject(AuthService);
   private competitionService = inject(CompetitionService);
 
   private _loadError = signal<string | null>(null);
@@ -35,6 +38,7 @@ export class DashboardAdmin implements OnInit, AfterViewInit {
   readonly _submitError = signal<string | null>(null);
   readonly submitError = this._submitError.asReadonly();
 
+  // Feedback messages for form submission
   readonly isSubmitting = signal(false);
   readonly competitions = signal<Competition[]>([]);
   readonly competition = signal<Competition | null>(null);
@@ -52,6 +56,7 @@ export class DashboardAdmin implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.loadCompetitions();
+    this.authService.setFooterVisible(true);
   }
 
   ngAfterViewInit(): void {
@@ -63,7 +68,7 @@ export class DashboardAdmin implements OnInit, AfterViewInit {
   private async loadCompetitions(): Promise<void> {
     try {
       const competitions = await firstValueFrom(
-        this.competitionService.onRead()
+        this.competitionService.findAll()
       );
       this.competitions.set(competitions);
     } catch (err) {
@@ -72,6 +77,7 @@ export class DashboardAdmin implements OnInit, AfterViewInit {
     }
   }
 
+  // Unified handler for form submission (create or update)
   private async handleSubmit(
     request: () => Promise<void>,
     successMessage: string
@@ -99,7 +105,7 @@ export class DashboardAdmin implements OnInit, AfterViewInit {
     if (!this.competition()) {
       return this.handleSubmit(async () => {
         const newCompetition = await firstValueFrom(
-          this.competitionService.onCreate(formValue)
+          this.competitionService.create(formValue)
         );
 
         this.competitions.update((list) => [...list, newCompetition]);
@@ -110,7 +116,7 @@ export class DashboardAdmin implements OnInit, AfterViewInit {
     if (!id) return;
 
     return this.handleSubmit(async () => {
-      await firstValueFrom(this.competitionService.onUpdate(id, formValue));
+      await firstValueFrom(this.competitionService.update(id, formValue));
 
       const updated: Competition = {
         ...this.competition(),
@@ -145,6 +151,7 @@ export class DashboardAdmin implements OnInit, AfterViewInit {
     };
   }
 
+  // Modal handling
   openDeleteModal(competition: Competition) {
     this.competition.set(competition);
 
@@ -163,7 +170,7 @@ export class DashboardAdmin implements OnInit, AfterViewInit {
     if (!id) return;
 
     try {
-      await firstValueFrom(this.competitionService.onDelete(id));
+      await firstValueFrom(this.competitionService.delete(id));
 
       this.competitions.update((list) =>
         list.filter((c) => c.competitionId !== id)

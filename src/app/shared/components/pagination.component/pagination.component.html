@@ -2,7 +2,7 @@
 <div>
   <ul class="pagination justify-content-center mb-0">
     <!-- Previous button -->
-    <li class="page-item" [class.disabled]="current() === 1">
+    <li class="page-item" [class.disabled]="isFirst()">
       <a class="page-link" (click)="goTo(current() - 1)">&lt;</a>
     </li>
     <!-- Page numbers -->
@@ -21,7 +21,7 @@
       }
     </li>
     <!-- Next button -->
-    <li class="page-item" [class.disabled]="current() === totalPages()">
+    <li class="page-item" [class.disabled]="isLast()">
       <a class="page-link" (click)="goTo(current() + 1)">&gt;</a>
     </li>
   </ul>

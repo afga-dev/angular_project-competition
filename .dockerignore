@@ -1,0 +1,13 @@
+node_modules
+dist
+
+.git
+.gitignore
+
+*.log
+*.env
+
+README.md
+LICENSE
+
+Dockerfile

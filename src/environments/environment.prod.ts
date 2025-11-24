@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://api.freeprojectapi.com/api/ProjectCompetition'
+  apiUrl: 'https://api.freeprojectapi.com/api/ProjectCompetition',
 };

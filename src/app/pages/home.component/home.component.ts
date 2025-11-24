@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { HeaderComponent } from '../header.component/header.component';
 import { HomeStatsComponent } from '../home-stats.component/home-stats.component';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-home',
@@ -10,4 +11,10 @@ import { HomeStatsComponent } from '../home-stats.component/home-stats.component
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
 })
-export class HomeComponent {}
+export class HomeComponent implements OnInit {
+  private authService = inject(AuthService);
+
+  ngOnInit(): void {
+    this.authService.setFooterVisible(true);
+  }
+}

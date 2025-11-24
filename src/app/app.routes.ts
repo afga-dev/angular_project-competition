@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './pages/home.component/home.component';
-import { guestGuard } from './guards/guest-guard.guard';
-import { authGuard } from './guards/auth-guard.guard';
+import { guestGuard } from './core/guards/guest-guard.guard';
+import { authGuard } from './core/guards/auth-guard.guard';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },

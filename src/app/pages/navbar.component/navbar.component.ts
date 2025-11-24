@@ -1,8 +1,8 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { UserService } from '../../services/user.service';
-import { scrollToElement, scrollToTop } from '../../utils/scroll-utils';
-import { AuthService } from '../../services/auth.service';
+import { UserService } from '../../core/services/user.service';
+import { scrollToElement, scrollToTop } from '../../shared/utils/scroll.util';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-navbar',
@@ -17,7 +17,7 @@ export class NavbarComponent {
   private authService = inject(AuthService);
   private userService = inject(UserService);
 
-  user = computed(() => this.userService.user());
+  readonly user = this.userService.user;
 
   onSignOut(): void {
     this.authService.signOutAndRedirect();
@@ -33,6 +33,8 @@ export class NavbarComponent {
   }
 
   scrollToFooter(): void {
-    scrollToElement('contact');
+    if (document.getElementById('contact')) {
+      scrollToElement('contact');
+    }
   }
 }

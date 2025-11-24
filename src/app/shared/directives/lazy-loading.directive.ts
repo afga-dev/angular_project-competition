@@ -12,7 +12,7 @@ import {
   standalone: true,
 })
 export class LazyLoadingDirective implements OnInit, OnDestroy {
-  delay = input(0);
+  delay = input<number>(0);
 
   private _intersectionObserver?: IntersectionObserver;
 

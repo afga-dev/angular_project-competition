@@ -1,10 +1,10 @@
 export interface Competition {
-    competitionId: number,
-    title: string,
-    description: string,
-    startDate: string,
-    endDate: string,
-    status: string
+  competitionId: number;
+  title: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  status: string;
 }
 export interface CompetitionCreate {
   title: string;

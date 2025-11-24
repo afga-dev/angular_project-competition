@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { SignUp } from '../models/signup.interface';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -18,6 +18,10 @@ export class AuthService {
 
   private userService = inject(UserService);
 
+  // Controls footer visibility across pages
+  private _isFooterVisible = signal<boolean>(false);
+  readonly isFooterVisible = this._isFooterVisible.asReadonly();
+
   signUp(user: SignUp): Observable<User> {
     return this.httpClient.post<User>(`${this.baseUrl}/register`, user);
   }
@@ -29,17 +33,18 @@ export class AuthService {
   async signOutAndRedirect(): Promise<void> {
     this.userService.deleteUser();
 
-    const currentUrl = this.router.url;
-    const targetUrl = this.getPublicRedirectUrl(currentUrl);
-    if (targetUrl !== currentUrl) {
-      await this.router.navigateByUrl(targetUrl, { replaceUrl: true });
-    } else {
-      this.router.navigateByUrl(currentUrl);
-    }
+    const targetUrl = this.getPublicRedirectUrl(this.router.url);
+
+    await this.router.navigateByUrl(targetUrl, { replaceUrl: true });
   }
 
+  // Ensures users leaving protected pages are redirected to a safe public URL after logout
   getPublicRedirectUrl(currentUrl: string): string {
     if (currentUrl.startsWith('/dashboard/admin')) return '/dashboard';
     return currentUrl;
+  }
+
+  setFooterVisible(state: boolean): void {
+    this._isFooterVisible.set(state);
   }
 }

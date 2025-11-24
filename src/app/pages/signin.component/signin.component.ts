@@ -1,20 +1,20 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { UserService } from '../../services/user.service';
-import { SignIn } from '../../models/signin.interface';
+import { UserService } from '../../core/services/user.service';
+import { SignIn } from '../../core/models/signin.interface';
 import { firstValueFrom } from 'rxjs';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-signin',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './signin.component.html',
-  styleUrls: ['./signin.component.css', '../../shared/auth.style.css'],
+  styleUrls: ['./signin.component.css', '../auth.style.css'],
 })
-export class SigninComponent {
+export class SigninComponent implements OnInit {
   private formBuilder = inject(FormBuilder);
   private router = inject(Router);
 
@@ -37,13 +37,17 @@ export class SigninComponent {
     password: ['', [Validators.required, Validators.maxLength(128)]],
   });
 
+  ngOnInit(): void {
+    this.authService.setFooterVisible(true);
+  }
+
   async onSubmit() {
     try {
       const signIn: SignIn = this.signInForm.getRawValue();
       signIn.email = signIn.email.trim();
       signIn.password = signIn.password.trim();
 
-      if (this.signInForm.invalid || this._isLoading() || !signIn) return;
+      if (this.signInForm.invalid || this._isLoading()) return;
 
       this._isLoading.set(true);
 
@@ -59,7 +63,6 @@ export class SigninComponent {
     }
   }
 
-  // Helper for form validation state
   hasError(controlName: string, error: string): boolean {
     const control = this.signInForm.get(controlName);
     return !!(control?.touched && control?.hasError(error));

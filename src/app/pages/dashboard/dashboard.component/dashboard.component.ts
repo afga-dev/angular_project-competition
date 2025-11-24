@@ -12,11 +12,12 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Competition } from '../../../models/competition.interface';
-import { CompetitionService } from '../../../services/competition.service';
-import { UserService } from '../../../services/user.service';
+import { Competition } from '../../../core/models/competition.interface';
+import { CompetitionService } from '../../../core/services/competition.service';
+import { UserService } from '../../../core/services/user.service';
 import { firstValueFrom } from 'rxjs';
-import { PaginationComponent } from '../../../shared/pagination.component/pagination.component';
+import { PaginationComponent } from '../../../shared/components/pagination.component/pagination.component';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -26,12 +27,14 @@ import { PaginationComponent } from '../../../shared/pagination.component/pagina
   styleUrl: './dashboard.component.css',
 })
 export class Dashboard implements OnInit, AfterViewInit {
+  private authService = inject(AuthService);
   private userService = inject(UserService);
   private competitionService = inject(CompetitionService);
 
   private _isLoading = signal<boolean>(true);
   readonly isLoading = this._isLoading.asReadonly();
 
+  // Computed list of competitions to display
   private _competitions = signal<Competition[]>([]);
   readonly competitions = computed(() =>
     this.parentCompetitions()?.length
@@ -53,18 +56,23 @@ export class Dashboard implements OnInit, AfterViewInit {
   readonly searchQuery = signal<string>('');
   readonly itemsPerPage = signal<number>(10);
 
+  // Inputs from parent component
   isEmbedded = input<boolean>(false);
   parentCompetitions = input<Competition[] | null>(null);
   parentError = input<string | null>(null);
+
+  // Outputs to parent component
   childEditCompetition = output<Competition>();
   childDeleteCompetition = output<Competition>();
 
   readonly user = computed(() => this.userService.user());
+  readonly isAdmin = computed(() => this.user() === 'admin');
 
   private _parentCompetitions = computed(
     () => !!this.parentCompetitions()?.length
   );
 
+  // Filtered competitions based on search query
   readonly filteredCompetitions = computed(() => {
     const term = this.searchQuery().trim().toLowerCase();
     return this.competitions().filter(
@@ -74,6 +82,7 @@ export class Dashboard implements OnInit, AfterViewInit {
     );
   });
 
+  // Paginated competitions for the table
   readonly displayedRows = computed(() => {
     const start = (this.currentPage() - 1) * this.itemsPerPage();
     const end = start + this.itemsPerPage();
@@ -107,6 +116,7 @@ export class Dashboard implements OnInit, AfterViewInit {
     }
 
     this.calculateHeight();
+    this.authService.setFooterVisible(true);
   }
 
   ngAfterViewInit(): void {
@@ -120,7 +130,7 @@ export class Dashboard implements OnInit, AfterViewInit {
       this._isLoading.set(true);
 
       const competitions = await firstValueFrom(
-        this.competitionService.onRead()
+        this.competitionService.findAll()
       );
       this._competitions.set(competitions);
 

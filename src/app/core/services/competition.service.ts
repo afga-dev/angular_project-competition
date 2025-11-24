@@ -16,32 +16,37 @@ export class CompetitionService {
   private httpClient = inject(HttpClient);
   private baseUrl = inject(API_URL);
 
+  // Dashboard summary information
   getSummary(): Observable<SummaryInterface> {
     return this.httpClient.get<SummaryInterface>(
       `${this.baseUrl}/getdashboardsummary`
     );
   }
 
-  onCreate(createData: CompetitionCreate): Observable<Competition> {
+  // Create a competition
+  create(createData: CompetitionCreate): Observable<Competition> {
     return this.httpClient.post<Competition>(
       `${this.baseUrl}/competition`,
       createData
     );
   }
 
-  onRead(): Observable<Competition[]> {
+  // Fetch all competitions
+  findAll(): Observable<Competition[]> {
     return this.httpClient.get<Competition[]>(
       `${this.baseUrl}/getallcompetition`
     );
   }
 
-  onDelete(id: number): Observable<CompetitionResponse> {
+  // Delete a competition by ID
+  delete(id: number): Observable<CompetitionResponse> {
     return this.httpClient.delete<CompetitionResponse>(
       `${this.baseUrl}/delete/${id}`
     );
   }
 
-  onUpdate(
+  // Update competition
+  update(
     id: number,
     competition: Competition
   ): Observable<CompetitionResponse> {

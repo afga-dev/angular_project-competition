@@ -30,15 +30,16 @@
   box-shadow: none;
 }
 
-/* Sign in button */
+/* Sign in/up button */
 .btn-dark {
   border: none;
   border-radius: 0;
   padding: 0.75rem;
   transition: background 0.3s ease;
+  background-color: #343a40;
 }
 .btn-dark:hover {
-  background-color: #333;
+  background-color: #000;
 }
 
 /* Alert */

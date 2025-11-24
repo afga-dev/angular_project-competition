@@ -4,8 +4,8 @@ import {
   input,
   output,
   OnChanges,
-  effect,
   SimpleChanges,
+  computed,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -23,24 +23,23 @@ export class PaginationComponent implements OnChanges {
   disabled = input<boolean>(false);
   pageChange = output<number>();
 
+  // Allows the component to update the page locally before emitting changes to the parent
   private _current = signal(1);
   readonly current = this._current.asReadonly();
 
-  private _total = signal(1);
+  isFirst = computed(() => this.current() === 1);
+  isLast = computed(() => this.current() === this.totalPages());
 
-  private _maximum = signal<(number | string)[]>([]);
-  readonly maximum = this._maximum.asReadonly();
-
-  readonly computePages = effect(() => {
-    const total = this._total();
-    const current = this._current();
+  // Computes the list of pages (numbers and ellipses) to render
+  readonly maximum = computed<(number | string)[]>(() => {
+    const total = this.totalPages();
+    const current = this.current();
     const maxVisible = this.maximumVisible();
     const pages: (number | string)[] = [];
 
     if (total <= maxVisible + 2) {
       for (let i = 1; i <= total; i++) pages.push(i);
-      this._maximum.set(pages);
-      return;
+      return pages;
     }
 
     pages.push(1);
@@ -58,12 +57,12 @@ export class PaginationComponent implements OnChanges {
 
     pages.push(total);
 
-    this._maximum.set(pages);
+    return pages;
   });
 
+  // Syncs internal current page when the parent updates input
   ngOnChanges(changes: SimpleChanges) {
     if (changes['currentPage']) this._current.set(this.currentPage());
-    if (changes['totalPages']) this._total.set(this.totalPages());
   }
 
   goTo(page: number) {

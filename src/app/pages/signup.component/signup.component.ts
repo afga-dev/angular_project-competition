@@ -1,21 +1,21 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { SignUp } from '../../models/signup.interface';
+import { SignUp } from '../../core/models/signup.interface';
 import { firstValueFrom } from 'rxjs';
-import { AuthService } from '../../services/auth.service';
-import { UserService } from '../../services/user.service';
-import { User } from '../../models/user.interface';
+import { AuthService } from '../../core/services/auth.service';
+import { UserService } from '../../core/services/user.service';
+import { User } from '../../core/models/user.interface';
 
 @Component({
   selector: 'app-signup',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './signup.component.html',
-  styleUrls: ['./signup.component.css', '../../shared/auth.style.css'],
+  styleUrls: ['./signup.component.css', '../auth.style.css'],
 })
-export class SignupComponent {
+export class SignupComponent implements OnInit {
   private formBuilder = inject(FormBuilder);
   private router = inject(Router);
 
@@ -37,8 +37,12 @@ export class SignupComponent {
       [Validators.required, Validators.maxLength(254), Validators.email],
     ],
     password: ['', [Validators.required, Validators.maxLength(128)]],
-    collegeName: ['', Validators.required, Validators.maxLength(100)],
+    collegeName: ['', [Validators.required, Validators.maxLength(100)]],
   });
+
+  ngOnInit(): void {
+    this.authService.setFooterVisible(true);
+  }
 
   async onSubmit() {
     try {
@@ -48,7 +52,7 @@ export class SignupComponent {
       signUp.email = signUp.email.trim();
       signUp.password = signUp.password.trim();
 
-      if (this.signUpForm.invalid || this._isLoading() || !signUp) return;
+      if (this.signUpForm.invalid || this._isLoading()) return;
 
       this._isLoading.set(true);
 
@@ -70,7 +74,6 @@ export class SignupComponent {
     }
   }
 
-  // Helper for form validation state
   hasError(controlName: string, error: string): boolean {
     const control = this.signUpForm.get(controlName);
     return !!(control?.touched && control?.hasError(error));
