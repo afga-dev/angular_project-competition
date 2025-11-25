@@ -1,6 +1,6 @@
 /* Header */
 .header {
-  background-image: url("../../../assets/images/header.png");
+  background-image: url("/assets/images/header.webp");
   background-size: cover;
   background-position: center;
   color: white;
@@ -11,13 +11,13 @@
   position: relative;
   overflow: hidden;
   text-transform: uppercase;
+  background-origin: border-box;
 }
 .header::before {
   content: "";
   position: absolute;
   inset: 0;
   background: rgba(0, 0, 0, 0.55);
-  backdrop-filter: blur(2px);
 }
 .header-content {
   position: relative;
