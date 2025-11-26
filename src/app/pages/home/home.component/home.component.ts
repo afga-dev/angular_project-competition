@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
-import { HeaderComponent } from '../header.component/header.component';
+import { HeaderComponent } from '../../header.component/header.component';
 import { HomeStatsComponent } from '../home-stats.component/home-stats.component';
-import { AuthService } from '../../core/services/auth.service';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-home',

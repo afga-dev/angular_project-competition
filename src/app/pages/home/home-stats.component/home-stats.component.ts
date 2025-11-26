@@ -1,8 +1,8 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
-import { CompetitionService } from '../../core/services/competition.service';
-import { SummaryInterface } from '../../core/models/summary.interface';
+import { CompetitionService } from '../../../core/services/competition.service';
+import { SummaryInterface } from '../../../core/models/summary.interface';
 import { firstValueFrom } from 'rxjs';
-import { LazyLoadingDirective } from '../../shared/directives/lazy-loading.directive';
+import { LazyLoadingDirective } from '../../../shared/directives/lazy-loading.directive';
 
 @Component({
   selector: 'app-home-stats',

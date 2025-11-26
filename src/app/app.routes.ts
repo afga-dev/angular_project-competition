@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { HomeComponent } from './pages/home.component/home.component';
+import { HomeComponent } from './pages/home/home.component/home.component';
 import { guestGuard } from './core/guards/guest-guard.guard';
 import { authGuard } from './core/guards/auth-guard.guard';
 
